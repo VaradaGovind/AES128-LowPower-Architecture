@@ -1,0 +1,15 @@
+* text=auto eol=lf
+
+*.v   text eol=lf linguist-language=Verilog
+*.vh  text eol=lf linguist-language=Verilog
+*.sv  text eol=lf linguist-language=SystemVerilog
+*.svh text eol=lf linguist-language=SystemVerilog
+
+*.md  text eol=lf
+*.txt text eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.pdf binary
