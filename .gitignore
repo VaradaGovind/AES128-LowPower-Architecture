@@ -1,0 +1,34 @@
+# OS/editor
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Local tooling
+.vscode/
+.specstory/
+
+# Vivado/XSim generated files
+.Xil/
+*.cache/
+*.data/
+*.hw/
+*.ip_user_files/
+*.runs/
+*.sim/
+xsim.dir/
+
+# Logs and transient outputs
+*.jou
+*.log
+*.pb
+webtalk*.jou
+webtalk*.log
+vivado_*.backup.*
+*.wdb
+*.wcfg
+
+# Generic temporary files
+*.tmp
+*.temp
+*.bak
+*~
