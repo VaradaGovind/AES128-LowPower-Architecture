@@ -14,18 +14,19 @@ By employing an N=2 hardware duplication strategy and staggered execution, the a
 ---
 
 ## 📊 Hardware Utilization & Metrics
-Synthesized with a baseline 100 MHz target frequency. The results demonstrate a **50% reduction in dynamic power** compared to the baseline single-core design.
+Synthesized with a baseline 100 MHz target frequency and optimized with Voltage Scaling ($V_{ccint}$ lowered to 0.95V). The results demonstrate a **53.0% reduction in total dynamic power** compared to the baseline single-core design, with the internal core logic consuming just **71 mW**.
 
-| Metric | Baseline (Single Core) | Proposed (N=2) | Change |
+| Metric | Baseline (Single Core, 1.0V) | Proposed (N=2, 0.95V) | Change |
 | :--- | :---: | :---: | :---: |
-| **Dynamic Power** | 0.700 W | 0.350 W | **-50.0%** |
-| **Total On-Chip Power** | 0.832 W | 0.489 W | **-41.2%** |
+| **Total Dynamic Power** | 0.700 W | 0.329 W | **-53.0%** |
+| **Total On-Chip Power** | 0.832 W | 0.457 W | **-45.1%** |
 | **Throughput** | 1.28 Gbps | 1.28 Gbps | Preserved |
 | **Per-Block Latency** | 100 ns | 200 ns | +100% |
-| **Slice LUTs** | 3,978 | 10,618 | +6,640 |
-| **Slice Registers (FFs)**| 262 | 3,790 | +3,528 |
+| **Slice LUTs** | 3,978 | 5,313 | +1,335 |
+| **Slice Registers (FFs)**| 262 | 3,905 | +3,643 |
 
-*Note: The area increase is an expected architectural tradeoff resulting from duplication overhead, input broadcast routing, completion multiplexing, and Reorder Buffer (ROB) sequence tracking.*
+*Note: The remaining dynamic power in the proposed design (0.258 W) is completely dominated by the massive I/O pin switching (384+ pins for AES interfaces) at 3.3V. The core AES logic alone accounts for only 0.071 W (71 mW) of dynamic power.*  
+*The area increase is an expected architectural tradeoff resulting from duplication overhead, input broadcast routing, completion multiplexing, and Reorder Buffer (ROB) sequence tracking.*
 
 ---
 
@@ -35,6 +36,7 @@ Synthesized with a baseline 100 MHz target frequency. The results demonstrate a 
 * **N=2 Hardware Duplication:** Two parallel AES lanes share an input broadcast, dividing the workload.
 * **Staggered Execution:** Utilizes one global clock combined with a round-robin phase counter to generate per-lane clock-enable (CE) pulses.
 * **Effective Update Rate:** Each lane operates at an effective rate of $f_{sample}/2$, allowing for lower dynamic switching power.
+* **Voltage Scaling:** By relaxing the timing constraints through parallel execution, operating voltages (`vccint` lowered to minimum 0.95V, `vccaux` to 1.71V, `mgtavcc` to 0.95V) have been scaled down in the `.xdc` constraints. This aggressively reduces core dynamic power down to **71 mW** within the Artix-7 device limits.
 
 ### ✔ Data Flow & Control
 * **Baseline Core Execution:** Features a standard 10-round AES execution after the initial add-round-key (one round per clock).
@@ -58,6 +60,8 @@ The design has been verified using Verilog testbenches against the **NIST AES-12
 ## 📂 Directory Structure
 ```text
 AES128-LowPower-Architecture/
+├── constraints/
+│   └── aes_top.xdc
 ├── src/
 │   └── rtl/
 │       ├── addroundkey.v
